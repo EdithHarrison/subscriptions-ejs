@@ -1,7 +1,10 @@
 <%- include("partials/head.ejs") %>
 <%- include("partials/header.ejs") %>
+<h2>Welcome to the Jobs EJS Application</h2>
 <% if (user) { %>
-    <a href="/secretWord">Click this link to view/change the secret word.</a>
+    <p>Hello, <%= user.email %>! You are logged in.</p>
+    <p><a href="/secretWord">Click this link to view/change the secret word.</a></p>
+    <p><a href="/jobs">Manage Jobs</a></p>
 <% } else { %>
     <a href="/sessions/logon">Click this link to logon.</a>
     <a href="/sessions/register">Click this link to register.</a>
