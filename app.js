@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const connectFlash = require("connect-flash");
+const passport = require("passport");
+const passportInit = require("./passport/passportInit");
 require("dotenv").config(); 
 
 const app = express();
@@ -37,31 +39,23 @@ if (app.get("env") === "production") {
 app.use(session(sessionParams));
 app.use(connectFlash());
 
-// Middleware to set flash messages in res.locals
-app.use((req, res, next) => {
-  res.locals.errors = req.flash("error");
-  res.locals.info = req.flash("info");
-  next();
+passportInit();
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+const storeLocals = require("./middleware/storeLocals");
+app.use(storeLocals);
+
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
-// Route for handling the secret word
-app.get("/secretWord", (req, res) => {
-  if (!req.session.secretWord) {
-    req.session.secretWord = "syzygy";
-  }
-  res.render("secretWord", { secretWord: req.session.secretWord });
-});
+app.use("/sessions", require("./routes/sessionRoutes"));
 
-app.post("/secretWord", (req, res) => {
-  if (req.body.secretWord.toUpperCase().startsWith("P")) {
-    req.flash("error", "That word won't work!");
-    req.flash("error", "You can't use words that start with P.");
-  } else {
-    req.session.secretWord = req.body.secretWord;
-    req.flash("info", "The secret word was changed.");
-  }
-  res.redirect("/secretWord");
-});
+const auth = require("./middleware/auth");
+const secretWordRouter = require("./routes/secretWord");
+app.use("/secretWord", auth, secretWordRouter);
 
 // 404 Error handler
 app.use((req, res) => {
@@ -78,6 +72,7 @@ const port = process.env.PORT || 3000;
 
 const start = async () => {
   try {
+    await require("./db/connect")(process.env.MONGO_URI);
     app.listen(port, () => {
       console.log(`Server is listening on port ${port}...`);
     });
