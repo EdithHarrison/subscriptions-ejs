@@ -3,16 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "test": "NODE_ENV=test mocha tests/*.mjs --exit"
   },
   "author": "Edith Harrison",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
-    "connect-mongodb-session": "^5.0.0",
+    "connect-mongodb-session": "^2.2.0",
     "cookie-parser": "^1.4.6",
     "csurf": "^1.11.0",
     "dotenv": "^16.4.5",
@@ -27,11 +29,18 @@
     "mongoose": "^8.4.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "supertest": "^7.0.0",
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "chai": "^4.4.1",
+    "chai-http": "^4.2.1",
     "eslint": "^9.3.0",
+    "factory-bot": "^6.3.1",
+    "mocha": "^10.4.0",
     "nodemon": "^3.1.1",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "puppeteer": "^22.11.0"
   }
 }
