@@ -7,4 +7,4 @@ const storeLocals = (req, res, next) => {
   next();
 };
 
-module.exports = storeLocals;
+export default storeLocals;

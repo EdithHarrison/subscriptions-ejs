@@ -1,8 +1,8 @@
-const Job = require("../models/Job");
-const parseVErr = require("../util/parseValidationErr");
-const csrf = require("host-csrf");
+import Job from "../models/Job.js";
+import parseVErr from "../util/parseValidationErr.js";
+import csrf from "host-csrf";
 
-const getJobs = async (req, res) => {
+export const getJobs = async (req, res) => {
   try {
     const jobs = await Job.find({ createdBy: req.user._id });
     const token = csrf.token(req, res);
@@ -13,7 +13,7 @@ const getJobs = async (req, res) => {
   }
 };
 
-const createJob = async (req, res) => {
+export const createJob = async (req, res) => {
   try {
     req.body.createdBy = req.user._id;
     await Job.create(req.body);
@@ -31,12 +31,12 @@ const createJob = async (req, res) => {
   }
 };
 
-const getJobForm = (req, res) => {
+export const getJobForm = (req, res) => {
   const token = csrf.token(req, res);
   res.render("job", { job: null, _csrf: token });
 };
 
-const editJobForm = async (req, res) => {
+export const editJobForm = async (req, res) => {
   try {
     const job = await Job.findOne({ _id: req.params.id, createdBy: req.user._id });
     if (!job) {
@@ -51,7 +51,7 @@ const editJobForm = async (req, res) => {
   }
 };
 
-const updateJob = async (req, res) => {
+export const updateJob = async (req, res) => {
   try {
     await Job.updateOne({ _id: req.params.id, createdBy: req.user._id }, req.body);
     req.flash("info", "Job updated successfully");
@@ -68,7 +68,7 @@ const updateJob = async (req, res) => {
   }
 };
 
-const deleteJob = async (req, res) => {
+export const deleteJob = async (req, res) => {
   try {
     await Job.deleteOne({ _id: req.params.id, createdBy: req.user._id });
     req.flash("info", "Job deleted successfully");
@@ -77,13 +77,4 @@ const deleteJob = async (req, res) => {
     req.flash("error", "Error deleting job");
     res.redirect("/jobs");
   }
-};
-
-module.exports = {
-  getJobs,
-  createJob,
-  getJobForm,
-  editJobForm,
-  updateJob,
-  deleteJob,
 };

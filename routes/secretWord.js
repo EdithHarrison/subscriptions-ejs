@@ -1,6 +1,7 @@
-const express = require("express");
+import express from 'express';
+import csrf from 'host-csrf';
+
 const router = express.Router();
-const csrf = require("host-csrf");
 
 router.get("/", (req, res) => {
   if (!req.session.secretWord) {
@@ -21,4 +22,5 @@ router.post("/", (req, res) => {
   res.redirect("/secretWord");
 });
 
-module.exports = router;
+export default router;
+
